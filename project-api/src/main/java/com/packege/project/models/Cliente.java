@@ -13,16 +13,20 @@ import javax.persistence.*;
 @Getter
 @AllArgsConstructor
 @Entity
-public class Client {
+public class Cliente {
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "nome")
     private String name;
+
     private String email;
+
     private String telefone;
 
-    public Client() {
+    public Cliente() {
 
     }
 

@@ -1,26 +1,41 @@
 package com.packege.project.controller;
 
 
-import com.packege.project.models.Client;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.packege.project.models.Cliente;
+import com.packege.project.repository.ClienteRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Optional;
 
+@AllArgsConstructor
 @RestController
-public class UserController{
+@RequestMapping("/clientes")
+public class ClientController {
 
-    @GetMapping("/clientes")
-    public List<Client> listaClientes (String name) {
-        var client1 = new Client();
-        client1.setId(1L);
-        client1.setName("Caio");
-        client1.setEmail("caio@gmail");
+    @PersistenceContext
+    private EntityManager manager;
 
-        var client2 = new Client();
-        client2.setId(2L);
-        client2.setName("jarders");
-        return Arrays.asList(client1, client2);
+    private ClienteRepository clienteRepository;
+    public List<Cliente> listar(){
+        return clienteRepository.findAll();
     }
+    @GetMapping("/{clientId}")
+    public ResponseEntity<Cliente> buscar(@PathVariable Long clientId){
+       return clienteRepository.findById(clientId)
+             .map(ResponseEntity::ok)
+             .orElse(ResponseEntity.notFound().build());
+    }
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Cliente adicionar(@RequestBody Cliente client) {
+        return clienteRepository.save(client);
+    }
+
 }
